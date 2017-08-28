@@ -37,7 +37,13 @@ Faye.Transport.WebSocket = Faye.extend(Faye.Class(Faye.Transport, {
     if (this._state !== this.UNCONNECTED) return;
     this._state = this.CONNECTING;
 
-    var socket = this._createSocket();
+    var socket;
+
+    try {
+      socket = this._createSocket();
+    } catch (e) {
+      // swallow error
+    }
     if (!socket) return this.setDeferredStatus('failed');
 
     var self = this;
