@@ -21,6 +21,7 @@ var Proxy = assign(Class({ className: 'Engine.Proxy',
     this._connections = {};
     this.interval     = this._options.interval || this.INTERVAL;
     this.timeout      = this._options.timeout  || this.TIMEOUT;
+    this.ping        = this._options.ping  || this.timeout;
 
     var engineClass = this._options.type || Memory;
     this._engine    = engineClass.create(this, this._options);

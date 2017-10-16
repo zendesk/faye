@@ -19,6 +19,7 @@ var Server = Class({ className: 'Server',
     this._options  = options || {};
     var engineOpts = this._options.engine || {};
     engineOpts.timeout = this._options.timeout;
+    engineOpts.ping = this._options.ping;
     this._engine   = Engine.get(engineOpts);
 
     this.info('Created new server: ?', this._options);
@@ -145,6 +146,9 @@ var Server = Class({ className: 'Server',
     if (connectionType === 'eventsource') {
       interval = Math.floor(this._engine.timeout * 1000);
       timeout  = 0;
+    } else if (connectionType === 'websocket') {
+      interval = Math.floor(this._engine.interval * 1000);
+      timeout  = Math.floor(this._engine.ping * 1000);
     } else {
       interval = Math.floor(this._engine.interval * 1000);
       timeout  = Math.floor(this._engine.timeout * 1000);
