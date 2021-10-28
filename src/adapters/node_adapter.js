@@ -114,7 +114,7 @@ var NodeAdapter = Class({ className: 'NodeAdapter',
     response.on('error', function(error) { self._returnError(null, error) });
 
     if (this._handleCallback) {
-      const handled = await this._handleCallback(request, response);
+      const handled = this._handleCallback(request, response);
       if (handled) {
         return;
       }
