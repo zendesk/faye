@@ -27,7 +27,7 @@ var NodeAdapter = Class({ className: 'NodeAdapter',
 
   initialize: function(options) {
     this._options = options || {};
-    validateOptions(this._options, ['engine', 'mount', 'ping', 'timeout', 'extensions', 'websocketExtensions']);
+    validateOptions(this._options, ['engine', 'mount', 'ping', 'timeout', 'extensions', 'websocketExtensions', 'handleCallback']);
 
     this._extensions = [];
     this._endpoint   = this._options.mount || this.DEFAULT_ENDPOINT;
@@ -114,7 +114,7 @@ var NodeAdapter = Class({ className: 'NodeAdapter',
     response.on('error', function(error) { self._returnError(null, error) });
 
     if (this._handleCallback) {
-      const handled = this._handleCallback(request, response);
+      const handled = await this._handleCallback(request, response);
       if (handled) {
         return;
       }
