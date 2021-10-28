@@ -113,6 +113,13 @@ var NodeAdapter = Class({ className: 'NodeAdapter',
     request.on('error', function(error) { self._returnError(response, error) });
     response.on('error', function(error) { self._returnError(null, error) });
 
+    if (this._handleCallback) {
+      const handled = this._handleCallback(request, response);
+      if (handled) {
+        return;
+      }
+    }
+
     if (this._static.test(requestUrl.pathname))
       return this._static.call(request, response);
 
