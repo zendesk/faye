@@ -105,9 +105,7 @@ var NodeAdapter = Class({ className: 'NodeAdapter',
   },
 
   handle: function(request, response) {
-    var requestUrl    = url.parse(request.url, true),
-        requestMethod = request.method,
-        self          = this;
+    var self = this;
 
     request.originalUrl = request.url;
 
@@ -115,11 +113,25 @@ var NodeAdapter = Class({ className: 'NodeAdapter',
     response.on('error', function(error) { self._returnError(null, error) });
 
     if (this._handleCallback) {
-      const handled = this._handleCallback(request, response);
-      if (handled) {
-        return;
-      }
+      this._handleCallback(request, response).then((handled) => {
+        if (handled) {
+          return;
+        } else {
+          this._finishHandle(request, response);
+          return;
+        }
+      }).catch((err) => {
+        console.log(err);
+        this._finishHandle(request, response);
+      });
+      return;
     }
+    this._finishHandle(request, response);
+  },
+
+  _finishHandle(request, response) {
+    var requestUrl    = url.parse(request.url, true),
+    requestMethod = request.method;
 
     if (this._static.test(requestUrl.pathname))
       return this._static.call(request, response);
