@@ -180,6 +180,14 @@ var NodeAdapter = Class({ className: 'NodeAdapter',
         if (!response.writableEnded) {
           response.writeHead(200, headers);
           response.end(body);
+        } else {
+          this.error('Attempted to add headers to writableEnded response', {
+            response: { statusCode: response.statusCode, statusMessage: response.statusMessage },
+            request: {
+              url: response.req && response.req.url,
+              method: response.req && response.req.method,
+            },
+          });
         }
       }, this);
     } catch (error) {
@@ -302,6 +310,14 @@ var NodeAdapter = Class({ className: 'NodeAdapter',
     if (!response.writableEnded) {
       response.writeHead(400, contenttypes.TYPE_TEXT);
       response.end('Bad request');
+    } else {
+      this.error('Attempted to add headers to writableEnded response', {
+        response: { statusCode: response.statusCode, statusMessage: response.statusMessage },
+        request: {
+          url: response.req && response.req.url,
+          method: response.req && response.req.method,
+        },
+      });
     }
   }
 });
