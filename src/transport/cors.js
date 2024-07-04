@@ -77,9 +77,8 @@ var CORS = assign(Class(Transport, {
     if (global.XMLHttpRequest) {
       var xhr = new XMLHttpRequest();
       return callback.call(context, xhr.withCredentials !== undefined);
-    } else {
-      return callback.call(context, false);
     }
+    return callback.call(context, false);
   }
 });
 
