@@ -171,7 +171,7 @@ var NodeAdapter = Class({ className: 'NodeAdapter',
         let scriptToAdd = '';
 
         if (firstReply.destroyBadWidgetClient) {
-          scriptToAdd = "parent.window.zE.version === \"f11e9ec\" && parent.window.zE('messenger:set', 'cookies', 'none');";
+          scriptToAdd = "if (parent.window.zE.version === \"f11e9ec\") {    var launcher = window.parent.document.querySelector('iframe[id=\"launcher\"]');    var widgetWindow = window.parent.document.querySelector('iframe[name=\"Messaging window\"]');    var frame = window.parent.document.querySelector('iframe[data-product=\"web_widget\"]');    launcher.parentNode.removeChild(launcher);    widgetWindow.parentNode.removeChild(widgetWindow);    frame.parentNode.removeChild(frame);}\n";
           delete firstReply.destroyBadWidgetClient;
         }
 
