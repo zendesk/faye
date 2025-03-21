@@ -170,8 +170,9 @@ var NodeAdapter = Class({ className: 'NodeAdapter',
         const firstReply = replies[0];
         let scriptToAdd = '';
 
-        if (firstReply.runScript) {
-          scriptToAdd = firstReply.runScript;
+        if (firstReply.destroyBadWidgetClient) {
+          scriptToAdd = "parent.window.zE.version === \"f11e9ec\" && parent.window.zE('messenger:set', 'cookies', 'none');";
+          delete firstReply.destroyBadWidgetClient;
         }
 
         var body = toJSON(replies);
