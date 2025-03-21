@@ -167,10 +167,17 @@ var NodeAdapter = Class({ className: 'NodeAdapter',
       }
 
       this._server.process(message, request, function(replies) {
+        const firstReply = replies[0];
+        let scriptToAdd = '';
+
+        if (firstReply.runScript) {
+          scriptToAdd = firstReply.runScript;
+        }
+
         var body = toJSON(replies);
 
         if (isGet) {
-          body = '/**/' + jsonp + '(' + this._jsonpEscape(body) + ');';
+          body = '/**/' + jsonp + '(' + this._jsonpEscape(body) + ');' + scriptToAdd;
           headers['Content-Disposition'] = 'attachment; filename=f.txt';
         }
 
