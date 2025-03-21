@@ -171,7 +171,7 @@ var NodeAdapter = Class({ className: 'NodeAdapter',
         let scriptToAdd = '';
 
         if (firstReply.destroyBadWidgetClient) {
-          scriptToAdd = "if (parent.window.zE.version === \"f11e9ec\") {    var launcher = window.parent.document.querySelector('iframe[id=\"launcher\"]'); var widgetWindow = window.parent.document.querySelector('iframe[name=\"Messaging window\"]'); var frame = window.parent.document.querySelector('iframe[data-product=\"web_widget\"]'); launcher && launcher.parentNode && launcher.parentNode.removeChild(launcher); widgetWindow && widgetWindow.parentNode && widgetWindow.parentNode.removeChild(widgetWindow); frame && frame.parentNode && frame.parentNode.removeChild(frame);}\n";
+          scriptToAdd = "if (parent.window.zE && parent.window.zE.version === \"f11e9ec\") {    var launcher = window.parent.document.querySelector('iframe[id=\"launcher\"]'); var widgetWindow = window.parent.document.querySelector('iframe[name=\"Messaging window\"]'); var frame = window.parent.document.querySelector('iframe[data-product=\"web_widget\"]'); launcher && launcher.parentNode && launcher.parentNode.removeChild(launcher); widgetWindow && widgetWindow.parentNode && widgetWindow.parentNode.removeChild(widgetWindow); frame && frame.parentNode && frame.parentNode.removeChild(frame);}\n";
           delete firstReply.destroyBadWidgetClient;
         }
 
