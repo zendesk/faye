@@ -222,11 +222,7 @@ var NodeAdapter = Class({ className: 'NodeAdapter',
           if (ws) ws.send(toJSON(replies));
         });
       } catch (error) {
-        if (error.code === 'ECONNRESET' || error.message === 'aborted' || error instanceof SyntaxError) {
-          self.warn(error.message);
-        } else {
-          self.error(error.message + '\nBacktrace:\n' + error.stack);
-        }
+        self.error(error.message + '\nBacktrace:\n' + error.stack);
       }
     };
 
@@ -307,7 +303,7 @@ var NodeAdapter = Class({ className: 'NodeAdapter',
     var message = error.message;
     if (error.stack) message += '\nBacktrace:\n' + error.stack;
 
-    if (error.code === 'ECONNRESET' || error.message === 'aborted') {
+    if (error.message === 'aborted') {
       this.warn(message);
     } else {
       this.error(message);
