@@ -181,7 +181,7 @@ var NodeAdapter = Class({ className: 'NodeAdapter',
           response.writeHead(200, headers);
           response.end(body);
         } else {
-          this.error('Attempted to add headers to writableEnded response', {
+          this.debug('Skipped writing to ended response', {
             response: { statusCode: response.statusCode, statusMessage: response.statusMessage },
             request: {
               url: response.req && response.req.url,
@@ -222,7 +222,6 @@ var NodeAdapter = Class({ className: 'NodeAdapter',
           if (ws) ws.send(toJSON(replies));
         });
       } catch (error) {
-        console.log(error.stack);
         self.error(error.message + '\nBacktrace:\n' + error.stack);
       }
     };
@@ -303,7 +302,12 @@ var NodeAdapter = Class({ className: 'NodeAdapter',
   _returnError: function(response, error) {
     var message = error.message;
     if (error.stack) message += '\nBacktrace:\n' + error.stack;
-    this.error(message);
+
+    if (error.message === 'aborted') {
+      this.warn(message);
+    } else {
+      this.error(message);
+    }
 
     if (!response) return;
 
@@ -311,7 +315,7 @@ var NodeAdapter = Class({ className: 'NodeAdapter',
       response.writeHead(400, contenttypes.TYPE_TEXT);
       response.end('Bad request');
     } else {
-      this.error('Attempted to add headers to writableEnded response', {
+      this.debug('Skipped writing to ended response', {
         response: { statusCode: response.statusCode, statusMessage: response.statusMessage },
         request: {
           url: response.req && response.req.url,
