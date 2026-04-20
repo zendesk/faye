@@ -28,12 +28,13 @@ var NodeAdapter = Class({ className: 'NodeAdapter',
 
   initialize: function(options) {
     this._options = options || {};
-    validateOptions(this._options, ['engine', 'mount', 'ping', 'timeout', 'extensions', 'websocketExtensions']);
+    validateOptions(this._options, ['engine', 'mount', 'ping', 'timeout', 'extensions', 'websocketExtensions', 'handleCallback']);
 
     this._extensions = [];
     this._endpoint   = this._options.mount || this.DEFAULT_ENDPOINT;
     this._endpointRe = new RegExp('^' + this._endpoint.replace(/\/$/, '') + '(/[^/]*)*(\\.[^\\.]+)?$');
     this._server     = Server.create(this._options);
+    this._handleCallback = this._options.handleCallback;
 
     this._static = new StaticServer(path.join(__dirname, '..', '..', 'client'), /\.(?:js|map)$/);
     this._static.map(path.basename(this._endpoint) + '.js', this.SCRIPT_PATH);
@@ -105,14 +106,33 @@ var NodeAdapter = Class({ className: 'NodeAdapter',
   },
 
   handle: function(request, response) {
-    var requestUrl    = url.parse(request.url, true),
-        requestMethod = request.method,
-        self          = this;
+    var self = this;
 
     request.originalUrl = request.url;
 
     request.on('error', function(error) { self._returnError(response, error) });
     response.on('error', function(error) { self._returnError(null, error) });
+
+    if (this._handleCallback) {
+      this._handleCallback(request, response).then((handled) => {
+        if (handled) {
+          return;
+        } else {
+          this._finishHandle(request, response);
+          return;
+        }
+      }).catch((err) => {
+        console.log(err);
+        this._finishHandle(request, response);
+      });
+      return;
+    }
+    this._finishHandle(request, response);
+  },
+
+  _finishHandle(request, response) {
+    var requestUrl    = url.parse(request.url, true),
+    requestMethod = request.method;
 
     if (this._static.test(requestUrl.pathname))
       return this._static.call(request, response);
